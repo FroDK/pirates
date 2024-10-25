@@ -50,10 +50,9 @@ jobs:
       - name: Install Bun (Windows)
         if: ${{ matrix.platform == 'windows-latest' }}
         run: |
-          Invoke-WebRequest -Uri https://bun.sh/install -OutFile install_bun.ps1
-          .\install_bun.ps1
-          echo "$HOME/.bun" | Out-File -FilePath $Env:GITHUB_ENV -Append
-          echo "$Env:Path=$HOME/.bun/bin;$Env:Path" | Out-File -FilePath $Env:GITHUB_ENV -Append
+          powershell -c "irm bun.sh/install.ps1|iex"
+          echo "$HOME/.bun" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "$env:Path=$HOME/.bun/bin;$env:Path" | Out-File -FilePath $env:GITHUB_ENV -Append
         shell: pwsh
 
       - name: Install frontend dependencies
@@ -69,3 +68,5 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+          includeDebug: true
+          tauriScript: "bun run tauri"
