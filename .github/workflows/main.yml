@@ -51,8 +51,6 @@ jobs:
         if: ${{ matrix.platform == 'windows-latest' }}
         run: |
           powershell -c "irm bun.sh/install.ps1|iex"
-          echo "$HOME/.bun" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "$env:Path=$HOME/.bun/bin;$env:Path" | Out-File -FilePath $env:GITHUB_ENV -Append
         shell: pwsh
 
       - name: Install frontend dependencies
