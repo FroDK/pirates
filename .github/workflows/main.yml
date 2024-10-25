@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -39,20 +39,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Install Bun (Linux/Mac)
-        if: ${{ matrix.platform != 'windows-latest' }}
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          echo 'export BUN_INSTALL="$HOME/.bun"' >> $GITHUB_ENV
-          echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> $GITHUB_ENV
-        shell: bash
-
-      - name: Install Bun (Windows)
-        if: ${{ matrix.platform == 'windows-latest' }}
-        run: |
-          powershell -c "irm bun.sh/install.ps1|iex"
-        shell: pwsh
-
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      
       - name: Install frontend dependencies
         run: bun install
 
