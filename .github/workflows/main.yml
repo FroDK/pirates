@@ -18,11 +18,18 @@ jobs:
         include:
           - platform: "windows-latest"
             args: ""
-
+    environment: Secrets
+    
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Check Secrets
+        run: |
+          echo "GITHUB_TOKEN: $GITHUB_TOKEN"
+          echo "TAURI_SIGNING_PRIVATE_KEY: $TAURI_SIGNING_PRIVATE_KEY"
+          echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD: $TAURI_SIGNING_PRIVATE_KEY_PASSWORD"
+          
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
