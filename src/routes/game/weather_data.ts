@@ -1,0 +1,130 @@
+export const locations = [
+  {
+    name: "tortuga",
+    label: "Тортуга",
+  },
+  {
+    name: "a_sea_of_tranquility",
+    label: "Море спокойствия",
+  },
+  {
+    name: "the_kraken_sea",
+    label: "Море Кракена",
+  },
+  {
+    name: "the_bermuda_triangle",
+    label: "Бермудский треугольник",
+  },
+  {
+    name: "iron_shores",
+    label: "Железные берега",
+  },
+  {
+    name: "aztec_island",
+    label: "Остров Ацтеков",
+  },
+] as const;
+
+export const weatherData = [
+  [
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+  ],
+  [
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "haze", "sunny"],
+  ],
+  [
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "haze", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "sunny", "stormy", "haze", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "haze", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "haze", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "sunny"],
+    ["sunny", "sunny", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "windy", "stormy", "windy", "stormy"],
+    ["sunny", "sunny", "sunny", "stormy", "sunny", "sunny"],
+    ["sunny", "sunny", "haze", "stormy", "windy", "sunny"],
+    ["sunny", "stormy", "stormy", "stormy", "stormy", "stormy"],
+    ["sunny", "sunny", "sunny", "stormy", "haze", "sunny"],
+  ],
+] as const;
+
+export type Weather = "sunny" | "windy" | "haze" | "stormy";
+export type Location =
+  | "tortuga"
+  | "a_sea_of_tranquility"
+  | "the_kraken_sea"
+  | "the_bermuda_triangle"
+  | "iron_shores"
+  | "aztec_island";
+export type Locations = typeof locations;
+export type WeatherData = typeof weatherData;
