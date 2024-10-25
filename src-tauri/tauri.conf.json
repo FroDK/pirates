@@ -23,6 +23,10 @@
   },
   "plugins": {
     "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFGRjQwMzI3MkZCNzc3QjIKUldTeWQ3Y3ZKd1Awcis5N0g2THJkbUhZK09YSlVmUE9jVkxnWURRSWV6M2ZUV1NKSjZLLytZaUIK",
+      "endpoints": [
+        "https://github.com/FroDK/pirates/releases/latest/download/latest.json"
+      ],
       "windows": {
         "installMode": "passive"
       }
