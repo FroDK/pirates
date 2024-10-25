@@ -42,10 +42,12 @@ jobs:
       - name: Install Bun
         run: |
           curl -fsSL https://bun.sh/install | bash
+          echo 'export BUN_INSTALL="$HOME/.bun"' >> $GITHUB_ENV
+          echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> $GITHUB_ENV
         shell: bash
 
       - name: Install frontend dependencies
-        run: bun install # Меняем yarn на bun
+        run: bun install
 
       - uses: tauri-apps/tauri-action@v0
         env:
