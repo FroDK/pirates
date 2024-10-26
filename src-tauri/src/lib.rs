@@ -3,7 +3,6 @@
     windows_subsystem = "windows"
 )]
 
-pub mod api_manager;
 use futures_util::{stream::SplitSink, SinkExt, StreamExt};
 use serde_json::Value;
 use std::sync::Arc;
@@ -13,40 +12,6 @@ use tokio::sync::Mutex;
 use tokio_tungstenite::accept_async;
 use tokio_tungstenite::tungstenite::Message;
 
-// struct APIManagerState {
-//     api_manager_mutex: Mutex<APIManager>,
-// }
-
-// #[tauri::command]
-// fn start_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
-//     let am = api_manager_state
-//         .api_manager_mutex
-//         .lock()
-//         .unwrap()
-//         .start_backend();
-//     am
-// }
-
-// #[tauri::command]
-// fn stop_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
-//     let am = api_manager_state
-//         .api_manager_mutex
-//         .lock()
-//         .unwrap()
-//         .terminate_backend();
-//     am
-// }
-
-// #[tauri::command]
-// fn restart_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
-//     let am = api_manager_state
-//         .api_manager_mutex
-//         .lock()
-//         .unwrap()
-//         .restart_backend();
-//     am
-// }
-
 type SharedSink =
     Arc<Mutex<SplitSink<tokio_tungstenite::WebSocketStream<tokio::net::TcpStream>, Message>>>;
 type SharedClients = Arc<Mutex<Vec<SharedSink>>>;
@@ -54,6 +19,7 @@ type SharedClients = Arc<Mutex<Vec<SharedSink>>>;
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let clients: SharedClients = Arc::new(Mutex::new(Vec::new()));
             let clients_clone = clients.clone();
