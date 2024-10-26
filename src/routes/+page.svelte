@@ -11,6 +11,8 @@
   import type { Update } from "@tauri-apps/plugin-updater";
   import * as AlertDialog from "$lib/components/ui/alert-dialog";
   import { Progress } from "$lib/components/ui/progress/index.js";
+  import * as Dialog from "$lib/components/ui/dialog/index.js";
+  import { getVersion } from "@tauri-apps/api/app";
 
   let ip = $state("127.0.0.1");
   let port = $state(9001);
@@ -19,7 +21,15 @@
   let isUpdateAvailable = $state(false);
   let showUpdateModal = $state(false);
 
-  let downloadState = $state({
+  interface IDownloadState {
+    downloadState: "Started" | "Progress" | "Finished" | null;
+    isDownloading: boolean;
+    contentLength: number;
+    downloaded: number;
+  }
+
+  let downloadState = $state<IDownloadState>({
+    downloadState: null,
     isDownloading: false,
     contentLength: 0,
     downloaded: 0,
@@ -41,19 +51,29 @@
     if (update) {
       downloadState.isDownloading = true;
 
-      await update.downloadAndInstall((event) => {
+      await update.download((event) => {
         switch (event.event) {
           case "Started":
+            downloadState.downloadState = "Started";
             downloadState.contentLength = event.data.contentLength!;
             break;
           case "Progress":
+            downloadState.downloadState = "Progress";
             downloadState.downloaded += event.data.chunkLength;
             break;
           case "Finished":
+            downloadState.downloadState = "Finished";
             downloadState.isDownloading = false;
             break;
         }
       });
+    }
+  }
+
+  async function installAndRestart() {
+    if (update) {
+      await update.install();
+      await relaunch();
     }
   }
 
@@ -71,7 +91,7 @@
 
   $effect(() => {
     if (isUpdateAvailable && update) {
-      toast.success(`Обновление: ${update.version} от ${update.date}`, {
+      toast.success(`Обнаружена новая версия: ${update.version}`, {
         action: {
           label: "Подробнее",
           onClick: () => {
@@ -81,61 +101,77 @@
       });
     }
   });
+
+  function formatDate(dateString: string): string {
+    // Разбиваем строку на части
+    const [datePart, timePart] = dateString.split(' ');
+    const [year, month, day] = datePart.split('-');
+    const [time] = timePart.split('.');
+    const [hour, minute] = time.split(':');
+    
+    // Создаем объект Date
+    const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
+    
+    // Форматируем дату
+    return date.toLocaleString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
 </script>
 
 <main>
   <Toaster position="top-right" theme="light" />
 
   {#if update}
-    <AlertDialog.Root bind:open={showUpdateModal}>
-      <AlertDialog.Content>
-        <AlertDialog.Header>
-          <AlertDialog.Title>
-            Обновление: {update.version} от {update.date}
-          </AlertDialog.Title>
-          <AlertDialog.Description>{update.body}</AlertDialog.Description>
-          {#if downloadState.isDownloading}
-            <AlertDialog.Description>
-              <div>
-                <Label>
-                  Загружено: {(downloadState.downloaded / 1024 / 1024).toFixed(
-                    2
-                  )}
-                  МБ из {(downloadState.contentLength / 1024 / 1024).toFixed(2)}
-                  МБ
-                </Label>
-                <Progress
-                  value={(downloadState.downloaded /
-                    downloadState.contentLength) *
-                    100}
-                  max={100}
-                />
-                <Label>
-                  {(
-                    (downloadState.downloaded / downloadState.contentLength) *
-                    100
-                  ).toFixed(1)}%
-                </Label>
-              </div>
-            </AlertDialog.Description>
+    <Dialog.Root bind:open={showUpdateModal}>
+      <Dialog.Content >
+        <Dialog.Header>
+          <Dialog.Title
+            >Обновление: {update.version} от {formatDate(update.date!)}</Dialog.Title
+          >
+          <Dialog.Description>
+            {update.body}
+          </Dialog.Description>
+        </Dialog.Header>
+        <div>
+          {#if downloadState.downloaded > 0}
+            <Label>
+              Загружено: {(downloadState.downloaded / 1024 / 1024).toFixed(2)}
+              МБ из {(downloadState.contentLength / 1024 / 1024).toFixed(2)}
+              МБ
+            </Label>
+            <Progress
+              value={(downloadState.downloaded / downloadState.contentLength) *
+                100 || parseInt("0")}
+              max={100}
+              class={downloadState.downloadState === "Finished" ? "progress-finished" : ""}
+            />
+            <Label>
+              {(
+                (downloadState.downloaded / downloadState.contentLength) *
+                  100 || parseFloat("0.0")
+              ).toFixed(1)}%
+            </Label>
           {/if}
-        </AlertDialog.Header>
-        <AlertDialog.Footer>
-          <AlertDialog.Cancel>Отмена</AlertDialog.Cancel>
-          {#if !downloadState.isDownloading}
-            <AlertDialog.Action onclick={downloadUpdate}>
-              Установить
-            </AlertDialog.Action>
-          {:else if downloadState.downloaded > 0}
-            <AlertDialog.Action disabled>Установка...</AlertDialog.Action>
-          {:else if downloadState.downloaded === downloadState.contentLength}
-            <AlertDialog.Action onclick={relaunch}>
-              Перезапустить
-            </AlertDialog.Action>
+        </div>
+        <Dialog.Footer class="flex justify-between">
+          <Button variant="outline" onclick={() => (showUpdateModal = false)}
+            >Отмена</Button
+          >
+          {#if !downloadState.isDownloading && downloadState.downloaded === 0}
+            <Button onclick={downloadUpdate}>Загрузить</Button>
+          {:else if downloadState.downloaded > 0 && downloadState.downloadState === "Progress"}
+            <Button disabled>Загрузка...</Button>
+          {:else if downloadState.downloadState === "Finished"}
+            <Button onclick={installAndRestart}>Перезапустить</Button>
           {/if}
-        </AlertDialog.Footer>
-      </AlertDialog.Content>
-    </AlertDialog.Root>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
   {/if}
 
   <Card.Root class="w-[450px]">
@@ -161,9 +197,19 @@
       <Button onclick={createGame}>Создать игру</Button>
     </Card.Footer>
   </Card.Root>
+
+  <div class="absolute left-0 bottom-0 w-full text-gray-500 font-mono text-xs">
+    {#await getVersion()}
+      <span>Загрузка...</span>
+    {:then version}
+      <span>v{version}</span>
+    {/await}
+  </div>
 </main>
 
 <style>
+
+
   main {
     margin: 0;
     display: flex;
@@ -174,6 +220,10 @@
     width: 100%;
   }
 
+  :global(.progress-finished :first-child) {
+    background-color: #37ff37;
+  }
+  
   :global(body) {
     background-color: #f0f0f0;
   }
