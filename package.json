@@ -1,6 +1,6 @@
 {
   "name": "host",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "type": "module",
   "scripts": {
@@ -30,6 +30,7 @@
     "bits-ui": "^0.21.16",
     "clsx": "^2.1.1",
     "lucide-svelte": "^0.453.0",
+    "mode-watcher": "^0.4.1",
     "paneforge": "^0.0.6",
     "svelte": "^5.0.5",
     "svelte-check": "^4.0.5",
