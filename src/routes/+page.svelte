@@ -9,10 +9,10 @@
   import { toast } from "svelte-sonner";
   import { onMount } from "svelte";
   import type { Update } from "@tauri-apps/plugin-updater";
-  import * as AlertDialog from "$lib/components/ui/alert-dialog";
   import { Progress } from "$lib/components/ui/progress/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { getVersion } from "@tauri-apps/api/app";
+  import { Command } from '@tauri-apps/plugin-shell';
 
   let ip = $state("127.0.0.1");
   let port = $state(9001);
@@ -74,6 +74,18 @@
     if (update) {
       await update.install();
       await relaunch();
+    }
+  }
+
+  async function getLocalIP() {
+    try {
+      const result = await Command.create('get-ip', ["(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias 'Ethernet*').IPAddress"]).execute();
+      
+      if (result.stdout) {
+        return result.stdout.trim();
+      }
+    } catch (error) {
+      console.error('Ошибка при получении IP-адреса:', error);
     }
   }
 
@@ -198,11 +210,17 @@
     </Card.Footer>
   </Card.Root>
 
-  <div class="absolute left-0 bottom-0 w-full text-gray-500 font-mono text-xs">
+  <div class="absolute left-0 bottom-0 w-full text-gray-500 font-mono text-xs flex justify-between">
     {#await getVersion()}
       <span>Загрузка...</span>
     {:then version}
       <span>v{version}</span>
+    {/await}
+
+    {#await getLocalIP()}
+      <span>Загрузка...</span>
+    {:then ip}
+      <span>{ip}</span>
     {/await}
   </div>
 </main>
