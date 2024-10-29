@@ -17,6 +17,16 @@
   import { locations, weatherData } from "../game/weather_data";
   import { onDestroy } from "svelte";
 
+  interface IOtherObjects {
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    path: string;
+    onPositionChange?: (id: string, x: number, y: number) => void;
+  }
+
   let ws: any;
 
   import { page } from "$app/stores";
@@ -63,6 +73,7 @@
     weather: string[];
     selectedWeaponAttackingShip: string;
     selectedWeaponDefendingShip: string;
+    otherObjects: IOtherObjects[];
   }
 
   let data: IData = $state({
@@ -74,6 +85,7 @@
     weather: [],
     selectedWeaponAttackingShip: "",
     selectedWeaponDefendingShip: "",
+    otherObjects: [],
   });
 
   let showAlertErrorConnect = $state(false);
@@ -225,12 +237,27 @@
                 alt="Gray by Drew Beamer"
                 class="h-full w-full rounded-xl"
               />
+              <img
+                src="/logo.png"
+                alt="logo"
+                class="absolute bottom-0 right-0 w-[165px] h-[100px]"
+              />
+
               {#each data.ships as ship (ship.id)}
                 <img
                   src={`/gifs/${ship.number}_${ship.color}.gif`}
                   alt="ship"
                   class="absolute"
                   style={`left: calc(${ship.x}% - ${ship.width / 2}px); top: calc(${ship.y}% - ${ship.height / 2}px); width: ${ship.width}px; height: ${ship.height}px;`}
+                />
+              {/each}
+
+              {#each data.otherObjects as otherObject}
+                <img
+                  src={otherObject.path}
+                  alt="other-object"
+                  class="absolute"
+                  style={`left: calc(${otherObject.x}% - ${otherObject.width / 2}px); top: calc(${otherObject.y}% - ${otherObject.height / 2}px); width: ${otherObject.width}px; height: ${otherObject.height}px;`}
                 />
               {/each}
             </AspectRatio>

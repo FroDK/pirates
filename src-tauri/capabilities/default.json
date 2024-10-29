@@ -7,11 +7,17 @@
   ],
   "permissions": [
     "core:default",
-    "shell:allow-open",
+    "shell:default",
+    "shell:allow-execute",
     "websocket:default",
     "log:default",
     "process:default",
-    "shell:default",
-    "updater:default"
+    "updater:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        { "name": "get-ip", "cmd": "powershell", "args": ["(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias 'Ethernet*').IPAddress"]}
+      ]
+    }
   ]
 }

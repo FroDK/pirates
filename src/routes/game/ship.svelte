@@ -81,7 +81,6 @@
   });
 
   let dialogOpen = $state(false);
-  let shipSize = $state([2]);
 
   let sizeMap: Record<number, { width: number; height: number }> = {
     0: {

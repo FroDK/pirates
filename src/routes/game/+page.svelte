@@ -19,6 +19,17 @@
   import { Label } from "$lib/components/ui/label/index.js";
   import { Input } from "$lib/components/ui/input";
   import { onDestroy } from "svelte";
+  import { OtherObject } from "@/components/other-object";
+
+  interface IOtherObjects {
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    path: string;
+    onPositionChange?: (id: string, x: number, y: number) => void;
+  }
 
   interface IData {
     ships: IShip[];
@@ -29,6 +40,7 @@
     weather: string[];
     selectedWeaponAttackingShip: string;
     selectedWeaponDefendingShip: string;
+    otherObjects: IOtherObjects[];
   }
 
   interface IShip {
@@ -45,16 +57,7 @@
 
   let ships: IShip[] = $state([]);
 
-  let data: IData = $state({
-    ships: [],
-    expedition: 1,
-    day: 1,
-    attackingShip: null,
-    defendingShip: null,
-    weather: [],
-    selectedWeaponAttackingShip: "",
-    selectedWeaponDefendingShip: "",
-  });
+  let otherObjects: IOtherObjects[] = $state([]);
 
   let sizeMap: Record<number, { width: number; height: number }> = {
     0: {
@@ -177,6 +180,7 @@
 
   function deleteAllShips() {
     ships = [];
+    otherObjects = [];
   }
 
   function previousDay() {
@@ -275,6 +279,23 @@
     ship.height = height;
   }
 
+  function addOtherObject(type: "pirates" | "aborigines") {
+    const newOtherObject = {
+      id: crypto.randomUUID(),
+      x: 50,
+      y: 50,
+      width: type === "pirates" ? 88 : 88,
+      height: type === "pirates" ? 88 : 110,
+      path: `/${type}.gif`,
+    };
+
+    otherObjects = [...otherObjects, newOtherObject];
+  }
+
+  function removeOtherObject(id: string) {
+    otherObjects = otherObjects.filter((o) => o.id !== id);
+  }
+
   // Подключаемся к WebSocket при инициализации компонента
   connectWebSocket();
 
@@ -295,6 +316,7 @@
       weather: weatherData[expedition.value - 1][day.value - 1],
       selectedWeaponAttackingShip,
       selectedWeaponDefendingShip,
+      otherObjects: otherObjects,
     };
 
     console.log("dataToSend", dataToSend);
@@ -348,6 +370,12 @@
               alt="Gray by Drew Beamer"
               class="h-full w-full rounded-xl"
             />
+            <img
+              src="/logo.png"
+              alt="logo"
+              class="absolute bottom-0 right-0 w-[165px] h-[100px]"
+            />
+
             {#each ships as ship (ship.id)}
               <Ship
                 {colors}
@@ -365,6 +393,23 @@
                 onNumberChange={(number) => onNumberChange(ship, number)}
                 onSizeChange={(width, height) =>
                   onSizeChange(ship, width, height)}
+              />
+            {/each}
+
+            {#each otherObjects as otherObject (otherObject.id)}
+              <OtherObject
+                id={otherObject.id}
+                x={otherObject.x}
+                y={otherObject.y}
+                width={otherObject.width}
+                height={otherObject.height}
+                path={otherObject.path}
+                onPositionChange={(id, x, y) => {
+                  otherObjects = otherObjects.map((o) =>
+                    o.id === id ? { ...o, x, y } : o
+                  );
+                }}
+                onRemove={(id) => removeOtherObject(id)}
               />
             {/each}
           </AspectRatio>
@@ -604,19 +649,34 @@
                   </div>
                 </form>
               </Card.Content>
-              <Card.Footer class="flex justify-between">
-                <Button on:click={addShip}>Добавить</Button>
+              <Card.Footer class="flex flex-col gap-2 items-center">
+                <Button on:click={addShip} class="w-full">Добавить</Button>
+
+                <Button
+                  on:click={() => addOtherObject("pirates")}
+                  variant="outline"
+                  class="w-full"
+                >
+                  Добавить пиратов
+                </Button>
+                <Button
+                  on:click={() => addOtherObject("aborigines")}
+                  variant="outline"
+                  class="w-full"
+                >
+                  Добавить аборигенов
+                </Button>
                 <Button
                   on:click={deleteAllShips}
                   variant="outline"
-                  class="text-red-500 hover:text-red-500"
-                  ><Trash2 class="mr-2 h-4 w-4" />Удалить все корабли</Button
+                  class="text-red-500 hover:text-red-500 w-full"
+                  ><Trash2 class="mr-2 h-4 w-4" />Удалить все</Button
                 >
               </Card.Footer>
             </Card.Root>
           </div>
-        </div></Resizable.Pane
-      >
+        </div>
+      </Resizable.Pane>
     </Resizable.PaneGroup>
   </div>
 </div>
@@ -645,7 +705,9 @@
     flex-direction: column;
     gap: 10px;
     height: 100%;
-    padding: 0px 16px;
+    padding: 0 16px 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
   }
 
   .settings {
@@ -660,6 +722,8 @@
     margin: 0;
     width: 100%;
     height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;

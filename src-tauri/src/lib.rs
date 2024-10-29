@@ -19,6 +19,7 @@ type SharedClients = Arc<Mutex<Vec<SharedSink>>>;
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let clients: SharedClients = Arc::new(Mutex::new(Vec::new()));
